@@ -9,10 +9,14 @@ pmc.Autocomplete = class Autocomplete{
       this.autocomplete.setAttribute("id", document.getElementById('cursor').parentNode.id + "autocomplete-list");
       this.autocomplete.setAttribute("class", "autocomplete-items");
       this.autocomplete.style.width = '200px';
+      this.autocomplete.position = 'relative';
+      this.autocomplete.style.left = '10px';
+      this.autocomplete.style.top = '8px';
+      this.autocomplete.style.marginTop = '130px';//(-(10+velvet.rows*18))+'px';
       document.getElementById('cursor').parentNode.appendChild(this.autocomplete);
     }
     
-    setCandidateValue(candidateValue, keyCode){
+    setCandidateValue(candidateValue, event){
         this.temporaryValue = candidateValue;
         this.closeAllLists();
         if(this.temporaryValue.length===0) return;
@@ -39,21 +43,21 @@ pmc.Autocomplete = class Autocomplete{
       }
       var x = document.getElementById(document.getElementById('cursor').parentNode.id + "autocomplete-list");
       if (x) x = x.getElementsByTagName("div");
-      if (keyCode == 40) {
+      if (event.keyCode == 40) {
         /*If the arrow DOWN key is pressed,
         increase the currentFocus variable:*/
         this.currentFocus++;
         /*and and make the current item more visible:*/
         this.addActive(x);
-      } else if (keyCode == 38) { //up
+      } else if (event.keyCode == 38) { //up
         /*If the arrow UP key is pressed,
         decrease the currentFocus variable:*/
         this.currentFocus--;
         /*and and make the current item more visible:*/
         this.addActive(x);
-      } else if (keyCode == 13) {
+      } else if (event.keyCode == 13) {
         /*If the ENTER key is pressed, prevent the form from being submitted,*/
-        //e.preventDefault();
+        event.preventDefault();
         if (this.currentFocus > -1) {
           /*and simulate a click on the "active" item:*/
           if (x) x[this.currentFocus].click();
@@ -62,6 +66,10 @@ pmc.Autocomplete = class Autocomplete{
     }
     
     getCompletedValue(){
+        var x = document.getElementsByClassName("autocomplete-items");
+        for (var i = 0; i < x.length; i++) {
+           return x[i].firstChild.lastChild.value;
+        }
         return this.value;
     }
     
@@ -84,17 +92,23 @@ pmc.Autocomplete = class Autocomplete{
   }
   
   closeAllLists(elmnt) {
-    /*close all autocomplete lists in the document,
-    except the one passed as an argument:*/
     var x = document.getElementsByClassName("autocomplete-items");
     for (var i = 0; i < x.length; i++) {
       if (elmnt != x[i]) {
-      //x[i].parentNode.removeChild(x[i]);
             while (x[i].hasChildNodes()) {
               x[i].removeChild(x[i].lastChild);
             }      
         }
       }
+    }
+
+  countListSize() {
+        var s = 0;
+        var x = document.getElementsByClassName("autocomplete-items");
+        for (var i = 0; i < x.length; i++) {
+           s+=x[i].childElementCount;
+        }
+        return s;
     }
     
 }

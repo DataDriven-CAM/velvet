@@ -21,7 +21,7 @@ pmc.Cursor = class Cursor{
     position(x, y){
         document.getElementById('cursor').style.top = (x-10)+"px";
         document.getElementById('cursor').style.left = (10+y)+"px";
-        document.getElementById('cursor').nextSibling.style.top = (x+8)+"px";
+        document.getElementById('cursor').nextSibling.style.top = (x+8+18)+"px";
         document.getElementById('cursor').nextSibling.style.left = (10+y)+"px";
         
     }

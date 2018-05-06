@@ -42,6 +42,7 @@ pmc.Velvet = class Velvet{
         for (var i in this.tokens) {
           //console.log(i + ' = ' + this.tokens[i]);
         }
+        var _this=this;
         this.tokens.tokens.forEach(function(token){
     /*Object.getOwnPropertyNames(token).forEach(
       function (val, idx, array) {
@@ -51,6 +52,12 @@ pmc.Velvet = class Velvet{
           if(token.column==0)lineOffset=0;
           //var tokenStr=token.source[1].strdata.substring(token.start, token.stop+1);
           var tokenStr=token.text;
+          if(_this.autoList.includes(tokenStr)){
+            ctx.fillStyle = "blue";
+          }
+          else{
+            ctx.fillStyle = "black";
+          }
           ctx.fillText(tokenStr, 10+lineOffset, 20+token.line*18);
           lineOffset+=ctx.measureText(token.text).width;
           rows=token.line;
@@ -112,6 +119,10 @@ pmc.Velvet = class Velvet{
       if(hit)break;
     }
     
+  }
+  
+  addKeyListener(keyListener){
+    this.keyEventListeners.externalkeyListener = keyListener;
   }
   
 }
