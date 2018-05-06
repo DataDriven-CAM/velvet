@@ -1,3 +1,4 @@
+/* global pmc */
 pmc.KeyEventListeners = class KeyEventListeners{
     constructor(velvet){
       this.velvet = velvet;
@@ -22,6 +23,7 @@ pmc.KeyEventListeners = class KeyEventListeners{
     switch (event.key) {
     case "ArrowLeft":
         // Left pressed
+        velvet.autocomplete.setCandidateValue("", event.keyCode);
         if(velvet.charOffset>0)velvet.charOffset--;
         else if(velvet.tokenIndex>0){
           velvet.tokenIndex--
@@ -43,6 +45,7 @@ pmc.KeyEventListeners = class KeyEventListeners{
         break;
     case "ArrowRight":
         // Right pressed
+        velvet.autocomplete.setCandidateValue("", event.keyCode);
         if(velvet.charOffset<tokenRange-1)velvet.charOffset++;
         else if(velvet.tokenIndex<velvet.tokens.tokens.length-1){
           var hit=false;
@@ -62,6 +65,7 @@ pmc.KeyEventListeners = class KeyEventListeners{
         break;
     case "ArrowUp":
         // Up pressed
+        velvet.autocomplete.setCandidateValue("", event.keyCode);
         var startIndex=velvet.tokenIndex;
         while(startIndex>0 && velvet.tokens.tokens[startIndex].line===currentLine){
           startIndex--;
@@ -73,6 +77,7 @@ pmc.KeyEventListeners = class KeyEventListeners{
         break;
     case "ArrowDown":
         // Down pressed
+        velvet.autocomplete.setCandidateValue("", event.keyCode);
         var endIndex=velvet.tokenIndex;
         while(endIndex<velvet.tokens.tokens.length-1 && velvet.tokens.tokens[endIndex].line===currentLine){
           endIndex++;
@@ -83,6 +88,7 @@ pmc.KeyEventListeners = class KeyEventListeners{
           if(velvet.charOffset>tokenRange)velvet.charOffset=tokenRange;
         break;
         case "Enter":
+          velvet.autocomplete.setCandidateValue("", event.keyCode);
           var tokenFactory=velvet.parser.getTokenFactory();
            for (var i in tokenFactory) {
              //console.log("Ent: "+tokenFactory[i]);
@@ -122,9 +128,7 @@ pmc.KeyEventListeners = class KeyEventListeners{
               velvet.tokens.tokens[velvet.tokenIndex].text=velvet.tokens.tokens[velvet.tokenIndex].text.substring(0, velvet.tokens.tokens[velvet.tokenIndex].text.length-1);
               velvet.tokens.tokens[velvet.tokenIndex].stop++;
               velvet.charOffset++;
-              if(velvet.autoList.includes(velvet.tokens.tokens[velvet.tokenIndex].text)){
-                console.log("lit: "+velvet.tokens.tokens[velvet.tokenIndex].text);
-              }
+              velvet.autocomplete.setCandidateValue(velvet.tokens.tokens[velvet.tokenIndex].text, event.keyCode);
             }
             else{
               velvet.removeCurrentToken();
@@ -145,19 +149,22 @@ pmc.KeyEventListeners = class KeyEventListeners{
               velvet.tokens.tokens.splice(velvet.tokenIndex, 0, tokenFactory.create(velvet.tokens.tokens[velvet.tokenIndex].source, 37, event.key, 1, velvet.tokens.tokens[velvet.tokenIndex].stop, velvet.tokens.tokens[velvet.tokenIndex].stop+1, velvet.tokens.tokens[velvet.tokenIndex].line, 0));
               //velvet.tokenIndex++;
               velvet.charOffset=1;
-              velvet.layoutText();
             }
             else {
               velvet.tokens.tokens[velvet.tokenIndex].text+=event.key;
               velvet.tokens.tokens[velvet.tokenIndex].stop++;
               velvet.charOffset++;
-              if(velvet.autoList.includes(velvet.tokens.tokens[velvet.tokenIndex].text)){
-                console.log("lit: "+velvet.tokens.tokens[velvet.tokenIndex].text);
-              }
-              velvet.layoutText();
+              //if(velvet.autoList.includes(velvet.tokens.tokens[velvet.tokenIndex].text)){
+              //  console.log("lit: "+velvet.tokens.tokens[velvet.tokenIndex].text);
+              //}
             }
+              velvet.layoutText();
+              velvet.autocomplete.setCandidateValue(velvet.tokens.tokens[velvet.tokenIndex].text, event.keyCode);
           }
-          else console.log("default: "+event.key);
+          else{
+            velvet.autocomplete.setCandidateValue("", event.keyCode);
+            console.log("default: "+event.key);
+          }
           break;
     }
     var lineStartIndex=velvet.tokenIndex;
@@ -167,47 +174,8 @@ pmc.KeyEventListeners = class KeyEventListeners{
     //console.log('place '+velvet.charOffset+" "+tokenRange+" start "+lineStartIndex+" "+velvet.tokenIndex+" "+currentLine+" "+velvet.tokens.tokens[velvet.tokenIndex].text);
         var line=velvet.tokens.getText({start: velvet.tokens.tokens[lineStartIndex], stop: velvet.tokens.tokens[velvet.tokenIndex]});
         var ctx = velvet.canvas.getContext('2d');
-        document.getElementById('cursor').style.top = (currentLine*18-10)+"px";
-        document.getElementById('cursor').style.left = (10+ctx.measureText(line.substring(0, line.length-tokenRange+velvet.charOffset)).width)+"px";
+        velvet.cursor.position(currentLine*18, ctx.measureText(line.substring(0, line.length-tokenRange+velvet.charOffset)).width);
         event.preventDefault();
-    }
-    
-    clicked (event){
-        var ctx = velvet.canvas.getContext('2d');
-    var x = event.clientX - ctx.canvas.offsetLeft + window.pageXOffset;
-    var y = event.clientY - ctx.canvas.offsetTop + window.pageYOffset;
-        var endIndex=0;
-        while(endIndex<velvet.tokens.tokens.length-1 && velvet.tokens.tokens[endIndex+1].line*18-10+36<y){
-          endIndex++;
-        }
-    var currentLine=velvet.tokens.tokens[endIndex].line;
-    var lineStartIndex=endIndex;
-    while(lineStartIndex>0 && velvet.tokens.tokens[lineStartIndex+1].line===currentLine){
-      lineStartIndex--;
-    }
-        var line=velvet.tokens.getText({start: velvet.tokens.tokens[lineStartIndex], stop: velvet.tokens.tokens[endIndex]});
-        var tokenRange=velvet.tokens.tokens[endIndex].stop-velvet.tokens.tokens[endIndex].start+1;
-        velvet.charOffset=0;
-        //var lineStartIndex=endIndex;
-        while(endIndex<velvet.tokens.tokens.length-1 /*&& velvet.tokens.tokens[velvet.tokenIndex].channel!=0*/ && (10+ctx.measureText(line.substring(0, line.length-tokenRange+velvet.charOffset)).width)<x){
-          if(velvet.charOffset<tokenRange)velvet.charOffset++;
-          else {
-            endIndex++;
-            line=velvet.tokens.getText({start: velvet.tokens.tokens[lineStartIndex], stop: velvet.tokens.tokens[endIndex]});
-            tokenRange=velvet.tokens.tokens[endIndex].stop-velvet.tokens.tokens[endIndex].start+1;
-            velvet.charOffset=0;
-          }
-        }
-        velvet.tokenIndex=(endIndex<velvet.tokens.tokens.length-1) ? endIndex : velvet.tokens.tokens.length-1;
-          currentLine=velvet.tokens.tokens[velvet.tokenIndex].line;
-          tokenRange=velvet.tokens.tokens[velvet.tokenIndex].stop-velvet.tokens.tokens[velvet.tokenIndex].start+1;
-          if(velvet.charOffset>tokenRange)velvet.charOffset=tokenRange;
-    //console.log('place '+lineStartIndex+" "+velvet.tokenIndex+" "+currentLine+" "+velvet.tokens.tokens[velvet.tokenIndex].channel);
-        var line=velvet.tokens.getText({start: velvet.tokens.tokens[lineStartIndex], stop: velvet.tokens.tokens[velvet.tokenIndex]});
-        document.getElementById('cursor').style.top = (currentLine*18-10)+"px";
-        document.getElementById('cursor').style.left = (10+ctx.measureText(line.substring(0, line.length-tokenRange+velvet.charOffset)).width)+"px";
-        //displayRule(velvet.tokenIndex);
-      event.preventDefault();
     }
     
 }

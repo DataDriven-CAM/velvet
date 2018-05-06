@@ -1,0 +1,29 @@
+#canvasEditor{z-index:1}
+#canvasEditor,#cursor{position:relative}
+#cursor{background-color:#000;margin-top:-130px;z-index:2;animation:blinker 1s linear infinite}
+
+#files{
+    position: relative;
+    left: 30px;
+    right: 30px;
+    border: 3px solid #73AD21;
+}
+#editor {
+    position: absolute;
+    top: 100px;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+}
+
+@keyframes blinker {  
+  50% { opacity: 0; }
+}
+
+footer {
+    background-color: #999;
+    width: 100%;
+    bottom: 0;
+    position: fixed;
+    text-align: right;
+}

@@ -17,30 +17,15 @@ pmc.Velvet = class Velvet{
           }
         }
         this.layoutText();
-        var cursorSelection = document.createElement('div');
-        cursorSelection.id = "cursor";
-        //cursorSelection.style.position = 'relative';
-        cursorSelection.style.width = '1px';
-        cursorSelection.style.height =  '16px';
-        //cursorSelection.style.backgroundColor = '#000';
-        //cursorSelection.style.color = '#000';
-        //cursorSelection.style.zIndex = '2';
-        //cursorSelection.style.animation = 'blinker 1s linear infinite';
-        cursorSelection.style.left = '10px';
-        cursorSelection.style.top = '8px';
-        cursorSelection.style.marginTop = (-(10+this.rows*18))+'px';
-        
-        document.getElementById('plate').appendChild(cursorSelection);
-        var status = document.createElement('div');
-        status.id = "status";
-        status.style.textAlign='right';
-        status.textContent = "0:0";
-        document.getElementById('foot').appendChild(status);
+        this.cursor = new pmc.Cursor(this);
+        this.autocomplete = new pmc.Autocomplete(this, this.autoList);
+        this.status = new pmc.Status(this);
 
         this.keyEventListeners = new pmc.KeyEventListeners(this);
         this.canvas.addEventListener('keypress', this.keyEventListeners.keyPressed, {capture:true});
         this.canvas.addEventListener('keydown', this.keyEventListeners.keyDowned, {capture:true});
-        this.canvas.addEventListener('click', this.keyEventListeners.clicked, {capture:true});
+        this.mouseEventListeners = new pmc.MouseEventListeners(this);
+        this.canvas.addEventListener('click', this.mouseEventListeners.clicked, {capture:true});
     }
     
     layoutText(){
@@ -93,7 +78,7 @@ pmc.Velvet = class Velvet{
       type.setAttributeNode(att);
       tokenCombo.appendChild(type);
     });
-    document.getElementById('info').appendChild(tokenCombo);
+    //document.getElementById('info').appendChild(tokenCombo);
     
   }
   
