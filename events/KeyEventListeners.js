@@ -12,6 +12,22 @@ pmc.KeyEventListeners = class KeyEventListeners{
       event.preventDefault();
     }
     
+    isCRLF(){
+      var ret=false;
+      switch(velvet.tokens.tokens[velvet.tokenIndex].text.length)
+      {
+        case 2:
+          ret= (velvet.tokens.tokens[velvet.tokenIndex].text[0]==='\r' && velvet.tokens.tokens[velvet.tokenIndex].text[1]==='\n');
+        break;
+        case 1:
+          ret= (velvet.tokens.tokens[velvet.tokenIndex].text[0]==='\r' || velvet.tokens.tokens[velvet.tokenIndex].text[0]==='\n');
+        break;
+        default:
+        break;
+      }
+      return ret;
+    }
+    
     keyDowned(event) {
       if(event.shiftKey && event.ctrlKey && !event.altKey){
       console.log(event.key);
@@ -25,41 +41,33 @@ pmc.KeyEventListeners = class KeyEventListeners{
         velvet.autocomplete.setCandidateValue("", event);
         if(velvet.charOffset>0)velvet.charOffset--;
         else if(velvet.tokenIndex>0){
-          velvet.tokenIndex--
-          var hit=false;
-        var tokenText=velvet.tokens.tokens[velvet.tokenIndex].text;
-        console.log("tokenText: "+tokenText);
-        if(velvet.tokenIndex>0 && (tokenText[velvet.charOffset]==='\r' || tokenText[velvet.charOffset]==='\n')){
           velvet.tokenIndex--;
-          tokenText=velvet.tokens.tokens[velvet.tokenIndex].text;
-          velvet.charOffset=0;
-          hit=true;
-        }
-        //if(!hit)velvet.tokenIndex--;
           currentLine=velvet.tokens.tokens[velvet.tokenIndex].line;
           tokenRange=velvet.tokens.tokens[velvet.tokenIndex].text.length;
-          velvet.charOffset=tokenRange;
+          velvet.charOffset=tokenRange-1;
+          if(velvet.keyEventListeners.isCRLF()){
+            velvet.charOffset=0;
+          }
+          else{
+            
+          }
         }
-        console.log("LA "+velvet.charOffset+" "+tokenRange+" "+velvet.tokenIndex);
         break;
     case "ArrowRight":
         // Right pressed
         velvet.autocomplete.setCandidateValue("", event);
-        if(velvet.charOffset<tokenRange-1)velvet.charOffset++;
+        if(!velvet.keyEventListeners.isCRLF() && velvet.charOffset<tokenRange-1)velvet.charOffset++;
         else if(velvet.tokenIndex<velvet.tokens.tokens.length-1){
-          var hit=false;
-        var tokenText=velvet.tokens.tokens[velvet.tokenIndex].text;
-        console.log("tokenText: "+tokenText);
-        if(velvet.tokenIndex<velvet.tokens.tokens.length-1 && (tokenText[velvet.charOffset]==='\r' || tokenText[velvet.charOffset]==='\n')){
           velvet.tokenIndex++;
-          tokenText=velvet.tokens.tokens[velvet.tokenIndex].text;
-          velvet.charOffset=0;
-          hit=true;
-        }
-        if(!hit) velvet.tokenIndex++;
           currentLine=velvet.tokens.tokens[velvet.tokenIndex].line;
-          tokenRange=velvet.tokens.tokens[velvet.tokenIndex].stop-velvet.tokens.tokens[velvet.tokenIndex].start+1;
+          tokenRange=velvet.tokens.tokens[velvet.tokenIndex].text.length;
           velvet.charOffset=0;
+          if(velvet.keyEventListeners.isCRLF()){
+            velvet.charOffset=tokenRange-1;
+          }
+          else{
+            
+          }
         }
         break;
     case "ArrowUp":
