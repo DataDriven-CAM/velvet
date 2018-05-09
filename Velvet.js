@@ -49,7 +49,7 @@ pmc.Velvet = class Velvet{
         console.log(val + ' -> ' + token[val]);
       }
     );*/
-          if(token.column==0)lineOffset=0;
+          if(token.column===0)lineOffset=0;
           //var tokenStr=token.source[1].strdata.substring(token.start, token.stop+1);
           var tokenStr=token.text;
           if(_this.autoList.includes(tokenStr)){
@@ -89,13 +89,18 @@ pmc.Velvet = class Velvet{
     
   }
   
+  insertCurrentToken(){
+    
+  }
+  
    removeCurrentToken(){
+     var tokenRange=velvet.tokens.tokens[velvet.tokenIndex].stop-velvet.tokens.tokens[velvet.tokenIndex].start+1;
     this.tokens.tokens.splice(this.tokenIndex, 1);
     console.log("deletng a crlf");
     this.tokens.tokens[this.tokenIndex].column=this.tokens.tokens[this.tokenIndex-1].column+1;
     for(var i= this.tokenIndex, l = this.tokens.tokens.length; i< l; i++){
-      //G4Editor.tokens.tokens[i].stop-=tokenRange;
-      //G4Editor.tokens.tokens[i].start-=tokenRange;
+      this.tokens.tokens[i].stop-=tokenRange;
+      this.tokens.tokens[i].start-=tokenRange;
       this.tokens.tokens[i].line--;
     }
     
