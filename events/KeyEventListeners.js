@@ -4,7 +4,7 @@ pmc.KeyEventListeners = class KeyEventListeners{
       this.velvet = velvet;
     }
     
-    keyPressed (event){
+    press (event){
       console.log('Key event is received!!');
       if(event.shiftKey && event.ctrlKey && !event.altKey){
         if(this.externalkeyListener!=undefined)this.externalkeyListener(event);
@@ -28,7 +28,7 @@ pmc.KeyEventListeners = class KeyEventListeners{
       return ret;
     }
     
-    keyDowned(event) {
+    down(event) {
       if(event.shiftKey && event.ctrlKey && !event.altKey){
       console.log(event.key);
         return;
@@ -171,7 +171,7 @@ pmc.KeyEventListeners = class KeyEventListeners{
           case "Shift":
             break;
         default:
-          if(!event.ctrlKey && !event.altKey && event.key>='!' && event.key<='z'){
+          if(!event.ctrlKey && !event.altKey && event.key>=' ' && event.key<='z'){
             //console.log("type="+velvet.tokens.tokens[velvet.tokenIndex].type);
             var stay = (velvet.autocomplete.countListSize()>=1 && velvet.tokens.tokens[velvet.tokenIndex].text===velvet.autocomplete.getCompletedValue());
             if(velvet.tokens.tokens[velvet.tokenIndex].type!=37 || stay){

@@ -22,10 +22,13 @@ pmc.Velvet = class Velvet{
         this.status = new pmc.Status(this);
 
         this.keyEventListeners = new pmc.KeyEventListeners(this);
-        this.canvas.addEventListener('keypress', this.keyEventListeners.keyPressed, {capture:true});
-        this.canvas.addEventListener('keydown', this.keyEventListeners.keyDowned, {capture:true});
+        this.canvas.addEventListener('keypress', this.keyEventListeners.press, {capture:true});
+        this.canvas.addEventListener('keydown', this.keyEventListeners.down, {capture:true});
         this.mouseEventListeners = new pmc.MouseEventListeners(this);
-        this.canvas.addEventListener('click', this.mouseEventListeners.clicked, {capture:true});
+        this.canvas.addEventListener('click', this.mouseEventListeners.click, {capture:true});
+        this.canvas.addEventListener('mousedown', this.mouseEventListeners.down, {capture:true});
+        this.canvas.addEventListener('mousemove', this.mouseEventListeners.move, {capture:true});
+        this.canvas.addEventListener('mouseup', this.mouseEventListeners.up, {capture:true});
     }
     
     layoutText(){
@@ -58,7 +61,24 @@ pmc.Velvet = class Velvet{
           else{
             ctx.fillStyle = "black";
           }
+          var copySHadowCOlor = ctx.shadowColor;
+          if(_this.cursor != undefined && _this.cursor.selected){
+            if(token.tokenIndex>=_this.cursor.startTokenIndex && token.tokenIndex<=_this.cursor.stopTokenIndex){
+            ctx.shadowColor = "darkgreen"; // string
+                //Color of the shadow;  RGB, RGBA, HSL, HEX, and other inputs are valid.
+            ctx.shadowOffsetX = 3; // integer
+                //Horizontal distance of the shadow, in relation to the text.
+            ctx.shadowOffsetY = 3; // integer
+                //Vertical distance of the shadow, in relation to the text.
+            ctx.shadowBlur = 10; // integer
+            }
+          }
           ctx.fillText(tokenStr, 10+lineOffset, 20+token.line*18);
+          ctx.shadowColor = ctx.shadowColor;
+          ctx.shadowOffsetX = 0;
+          ctx.shadowOffsetY = 0;
+          ctx.shadowBlur = 0;
+          
           lineOffset+=ctx.measureText(token.text).width;
           rows=token.line;
         });
