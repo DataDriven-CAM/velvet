@@ -4,6 +4,7 @@ pmc.Cursor = class Cursor{
     constructor(velvet){
         this.velvet = velvet;
         this.selected = false;
+        this.selectedTokens = [];
         var cursorSelection = document.createElement('div');
         cursorSelection.id = "cursor";
         //cursorSelection.style.position = 'relative';
@@ -41,6 +42,10 @@ pmc.Cursor = class Cursor{
         }
         y=velvet.cursor.currentLine*18;
         x=ctx.measureText(line.substring(0, line.length-tokenRange+velvet.charOffset)).width;
+        velvet.cursor.overlay(x, y);
+    }
+    
+    overlay(x, y){
         document.getElementById('cursor').style.top = (y-10)+"px";
         document.getElementById('cursor').style.left = (10+x)+"px";
         document.getElementById('cursor').nextSibling.style.top = (y+8+18)+"px";

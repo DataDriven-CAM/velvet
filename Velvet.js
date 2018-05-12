@@ -26,6 +26,7 @@ pmc.Velvet = class Velvet{
         this.canvas.addEventListener('keydown', this.keyEventListeners.down, {capture:true});
         this.mouseEventListeners = new pmc.MouseEventListeners(this);
         this.canvas.addEventListener('click', this.mouseEventListeners.click, {capture:true});
+        this.canvas.addEventListener('dblclick', this.mouseEventListeners.doubleclick, {capture:true});
         this.canvas.addEventListener('mousedown', this.mouseEventListeners.down, {capture:true});
         this.canvas.addEventListener('mousemove', this.mouseEventListeners.move, {capture:true});
         this.canvas.addEventListener('mouseup', this.mouseEventListeners.up, {capture:true});

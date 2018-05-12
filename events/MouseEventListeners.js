@@ -13,6 +13,17 @@ pmc.MouseEventListeners = class MouseEventListeners{
       event.preventDefault();
     }
     
+    doubleclick (event){
+        var ctx = velvet.canvas.getContext('2d');
+        var x = event.clientX - ctx.canvas.offsetLeft + window.pageXOffset;
+        var y = event.clientY - ctx.canvas.offsetTop + window.pageYOffset;
+        velvet.cursor.position(x, y);
+        velvet.cursor.startTokenIndex=velvet.tokenIndex;
+        velvet.cursor.stopTokenIndex=velvet.tokenIndex;
+        velvet.cursor.selected=true;
+        velvet.layoutText();
+    }
+    
     down (event){
         var ctx = velvet.canvas.getContext('2d');
         var x = event.clientX - ctx.canvas.offsetLeft + window.pageXOffset;
