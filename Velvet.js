@@ -30,6 +30,10 @@ pmc.Velvet = class Velvet{
         this.canvas.addEventListener('mousedown', this.mouseEventListeners.down, {capture:true});
         this.canvas.addEventListener('mousemove', this.mouseEventListeners.move, {capture:true});
         this.canvas.addEventListener('mouseup', this.mouseEventListeners.up, {capture:true});
+        this.dragAndDropListeners = new pmc.DragAndDropListeners(this);
+        this.canvas.addEventListener('dragenter', this.dragAndDropListeners.dragenter, {capture:true});
+        this.canvas.addEventListener('dragover', this.dragAndDropListeners.dragover, {capture:true});
+        this.canvas.addEventListener('drop', this.dragAndDropListeners.drop, {capture:true});
     }
     
     layoutText(){
@@ -110,8 +114,8 @@ pmc.Velvet = class Velvet{
     
   }
   
-  insertCurrentToken(){
-    
+  get text(){
+    return this.tokens.getText();
   }
   
    removeCurrentToken(){

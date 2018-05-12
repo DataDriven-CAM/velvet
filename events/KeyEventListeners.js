@@ -5,9 +5,9 @@ pmc.KeyEventListeners = class KeyEventListeners{
     }
     
     press (event){
-      //console.log('Key event is received!! '+event.shiftKey+" "+event.ctrlKey+" "+event.altKey);
       if(event.shiftKey && event.ctrlKey && !event.altKey){
-        if(this.externalkeyListener!=undefined)this.externalkeyListener(event);
+      //console.log('Key event is received!! '+event.shiftKey+" "+event.ctrlKey+" "+event.altKey+" "+event.key);
+        if(velvet.keyEventListeners.externalkeyListener!=undefined)velvet.keyEventListeners.externalkeyListener(event);
       }
       else if(!event.shiftKey && event.ctrlKey && !event.altKey){
         switch (event.key) {
@@ -288,7 +288,7 @@ pmc.KeyEventListeners = class KeyEventListeners{
     while(lineStartIndex>0 && velvet.tokens.tokens[lineStartIndex-1].line===currentLine){
       lineStartIndex--;
     }
-    console.log('place '+velvet.charOffset+" "+tokenRange+" start "+lineStartIndex+" "+velvet.tokenIndex+" "+currentLine+" "+velvet.tokens.tokens[velvet.tokenIndex].text+" "+velvet.tokens.tokens[velvet.tokenIndex].column+" "+velvet.tokens.tokens[velvet.tokenIndex].type);
+    //console.log('place '+velvet.charOffset+" "+tokenRange+" start "+lineStartIndex+" "+velvet.tokenIndex+" "+currentLine+" "+velvet.tokens.tokens[velvet.tokenIndex].text+" "+velvet.tokens.tokens[velvet.tokenIndex].column+" "+velvet.tokens.tokens[velvet.tokenIndex].type);
         var line=velvet.tokens.getText({start: velvet.tokens.tokens[lineStartIndex], stop: velvet.tokens.tokens[velvet.tokenIndex]});
         console.log("line "+JSON.stringify(line));
         velvet.cursor.overlay(ctx.measureText(line.substring(0, line.length-tokenRange+velvet.charOffset)).width, currentLine*18);
