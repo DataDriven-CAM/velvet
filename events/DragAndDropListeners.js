@@ -31,7 +31,14 @@ if (event.dataTransfer.types != null) {
    for (var i=0; i < event.dataTransfer.types.length; i++) {
      console.log("... types[" + i + "] = " + event.dataTransfer.types[i]);
    }
- }      
+ }
+    //velvet.displayRule(velvet.tokenIndex);
           velvet.layoutText();
+          //var predict=velvet.lexer._interp.matchATN(data);
+    /*Object.getOwnPropertyNames(velvet.lexer._interp.atn).forEach(
+      function (val, idx, array) {
+        console.log(val + ' -> ' + velvet.lexer._interp.atn[val]);
+      }
+    );*/
     }
 }

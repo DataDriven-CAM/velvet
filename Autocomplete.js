@@ -89,7 +89,9 @@ pmc.Autocomplete = class Autocomplete{
       }
         var x = document.getElementsByClassName("autocomplete-items");
         for (var i = 0; i < x.length; i++) {
+          if(x[i].firstChild.lastChild.value===this.temporaryValue){
            return x[i].firstChild.lastChild.value;
+          }
         }
         return this.value;
     }

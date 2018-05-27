@@ -99,7 +99,7 @@ pmc.KeyEventListeners = class KeyEventListeners{
     }
     
     down(event) {
-      if(event.shiftKey || event.ctrlKey || event.altKey){
+      if(event.ctrlKey || event.altKey){
         return;
       }
         var ctx = velvet.canvas.getContext('2d');
@@ -149,14 +149,6 @@ pmc.KeyEventListeners = class KeyEventListeners{
         velvet.autocomplete.setCandidateValue("", event);
         velvet.cursor.position(velvet.cursor.currentX+5, velvet.cursor.currentY);
         return;
-        /*var startIndex=velvet.tokenIndex;
-        while(startIndex>0 && velvet.tokens.tokens[startIndex-1].line===currentLine){
-          startIndex--;
-        }
-        velvet.tokenIndex=(startIndex>0) ? startIndex-1 : 0;
-          currentLine=velvet.tokens.tokens[velvet.tokenIndex].line;
-          tokenRange=velvet.tokens.tokens[velvet.tokenIndex].stop-velvet.tokens.tokens[velvet.tokenIndex].start+1;
-          if(velvet.charOffset>tokenRange)velvet.charOffset=tokenRange;*/
         }
         break;
     case "ArrowDown":
@@ -168,14 +160,6 @@ pmc.KeyEventListeners = class KeyEventListeners{
         velvet.autocomplete.setCandidateValue("", event);
         velvet.cursor.position(velvet.cursor.currentX+5, velvet.cursor.currentY + 36);
         return;
-        /*var endIndex=velvet.tokenIndex;
-        while(endIndex<velvet.tokens.tokens.length-1 && velvet.tokens.tokens[endIndex+1].line===currentLine){
-          endIndex++;
-        }
-        velvet.tokenIndex=(endIndex<velvet.tokens.tokens.length-1) ? endIndex+1 : velvet.tokens.tokens.length-1;
-          currentLine=velvet.tokens.tokens[velvet.tokenIndex].line;
-          tokenRange=velvet.tokens.tokens[velvet.tokenIndex].stop-velvet.tokens.tokens[velvet.tokenIndex].start+1;
-          if(velvet.charOffset>tokenRange)velvet.charOffset=tokenRange;*/
         }
         break;
         case "Enter":

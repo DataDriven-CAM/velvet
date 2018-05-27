@@ -1,6 +1,13 @@
 #canvasEditor{z-index:1}
 #canvasEditor,#cursor{position:relative}
 #cursor{background-color:#000;margin-top:-130px;z-index:2;animation:blinker 1s linear infinite}
+#graph{margin-top:-130px;z-index:3;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
 
 #files{
     position: relative;

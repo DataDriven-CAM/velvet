@@ -7,6 +7,11 @@ pmc.Velvet = class Velvet{
         this.lexer = lexer;
         this.parser = parser;
         this.tree = tree;
+    /*Object.getOwnPropertyNames(this.lexer._interp.atn).forEach(
+      function (val, idx, array) {
+        console.log(val + ' -> ' + lexer._interp.atn[val]);
+      }
+    );*/
         
         this.tokenIndex=0;
         this.charOffset=0;
@@ -140,7 +145,7 @@ pmc.Velvet = class Velvet{
           console.log("\t\t"+this.tree.children[i].children[j].invokingState+"  "+this.parser.ruleNames[this.tree.children[i].children[j].ruleIndex]);
           //console.log(this.tree.children[i].children[j].toString());
           for (var k in this.tree.children[i]) {
-            //console.log("\t\t"+k+" = "+this.tree.children[i][k]);
+            console.log("\t\t"+k+" = "+this.tree.children[i][k]);
           }
           hit=true;
           //break;
