@@ -50,53 +50,7 @@ pmc.MouseEventListeners = class MouseEventListeners{
           }
         }
 
-    //console.log(velvet.parser._interp.atn.states);
-    /*console.log(velvet.parser._interp.sharedContextCache.cache);
-Object.getOwnPropertyNames(velvet.parser._interp.sharedContextCache.cache).forEach(
-      function (val, idx, array) {
-        if(velvet.parser._interp.sharedContextCache.cache[val].constructor.name.endsWith("Context")){
-        console.log(val+" "+ val.constructor.name + ' p -> ' + velvet.parser._interp.sharedContextCache.cache[val].constructor.name);
-        console.log("return state "+ velvet.parser._interp.sharedContextCache.cache[val].getReturnState());
-        console.log("\t"+ velvet.parser._interp.atn.ruleToStartState[rule]);
-        if(velvet.parser._interp.sharedContextCache.cache[val].getParent()!=undefined)console.log(velvet.parser._interp.sharedContextCache.cache[val].getParent().constructor.name);
-        }
-      }
-    );*/
-        for(var guessIndex=0;guessIndex<velvet.parser._interp.atn.states.length;guessIndex++){
-          var predict = velvet.parser._interp.atn.getExpectedTokens(guessIndex, null);
-          for(var index in predict.intervals){
-            var ruleInterval=predict.intervals[index];
-          //console.log(ruleInterval);
-            for(var rule=ruleInterval.start;rule<ruleInterval.stop;rule++){
-            //if(velvet.tokens.tokens[velvet.tokenIndex].type===velvet.parser._interp.atn.ruleToTokenType[rule])
-            if(rule===99){
-              var startState=velvet.parser._interp.atn.ruleToStartState[rule];
-              var transition=startState.transitions[0];
-              console.log(transition);
-              if(transition.isEpsilon){
-                  console.log(rule+" p names: "+velvet.parser.ruleNames[rule]+" "+velvet.parser._interp.atn.ruleToStartState[rule]+" ε "+transition.target.stateNumber+" "+velvet.parser._interp.atn.ruleToStopState[rule]);
-                  console.log(transition.target.transitions.length);
-                  for(var innerIndex in transition.target.transitions){
-                    var innerTransition=transition.target.transitions[innerIndex];
-                      console.log(innerTransition);
-                    if(innerTransition.isEpsilon){
-                      console.log("\tε");
-                    }else{
-                      if(innerTransition.label!=null){
-                        console.log("\t"+velvet.parser.literalNames[innerTransition.label_]+" "+innerTransition.target.stateNumber);
-                      }else 
-                      console.log("\t"+innerTransition.target.stateNumber);
-                    }
-                  }
-                }else{
-                  console.log(rule+" p names: "+velvet.parser.ruleNames[rule]+" "+velvet.parser._interp.atn.ruleToStartState[rule]+" &epsilon; "+transition.target.stateNumber+" "+velvet.parser._interp.atn.ruleToStopState[rule]);
-                }
-            //velvet.mouseEventListeners.traceRule(velvet.parser._interp.atn.ruleToStartState[rule]);
-            }
-            }
-          }
-        }
-        
+      if(velvet.atnListener!=undefined)velvet.atnListener(99);
     }
     
     down (event){

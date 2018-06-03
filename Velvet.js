@@ -160,5 +160,9 @@ pmc.Velvet = class Velvet{
     this.keyEventListeners.externalkeyListener = keyListener;
   }
   
+  addATNListener(atnListener){
+    this.atnListener = atnListener;
+  }
+  
 }
 
