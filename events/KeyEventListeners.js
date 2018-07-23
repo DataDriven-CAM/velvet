@@ -4,6 +4,33 @@ pmc.KeyEventListeners = class KeyEventListeners{
       this.velvet = velvet;
     }
     
+   removeCurrentCharacter(event){
+     
+    var wascrlf=velvet.keyEventListeners.isCRLF(velvet.tokens.tokens[velvet.tokenIndex]);
+    if(!wascrlf && velvet.tokens.tokens[velvet.tokenIndex].text.length>1 && velvet.tokens.tokens[velvet.tokenIndex].text.length>velvet.charOffset){
+          var str=velvet.tokens.tokens[velvet.tokenIndex].text;
+          velvet.tokens.tokens[velvet.tokenIndex].text=str.slice(0, velvet.charOffset)+str.slice(velvet.charOffset+1);
+          velvet.tokens.tokens[velvet.tokenIndex].stop--;
+          velvet.autocomplete.setCandidateValue(velvet.tokens.tokens[velvet.tokenIndex].text, event);
+    }
+    else{
+      var tokenRange=velvet.tokens.tokens[velvet.tokenIndex].text.length;
+      velvet.tokens.tokens.splice(velvet.tokenIndex, 1);
+      console.log(wascrlf+" "+velvet.tokens.tokens[velvet.tokenIndex].text+" "+tokenRange);
+      velvet.tokens.tokens[velvet.tokenIndex].column=velvet.tokens.tokens[velvet.tokenIndex-1].column+1;
+      {
+        for(var i= velvet.tokenIndex, l = velvet.tokens.tokens.length; i< l; i++){
+          //velvet.tokens.tokens[i].stop-=tokenRange;
+          //velvet.tokens.tokens[i].start-=tokenRange;
+          if(wascrlf)velvet.tokens.tokens[i].line--;
+        }
+       velvet.tokens.tokens[velvet.tokenIndex+1].column=velvet.tokens.tokens[velvet.tokenIndex].column+1;
+       
+      }
+    }
+    return wascrlf;
+  }
+  
     press (event){
       if(event.shiftKey && event.ctrlKey && !event.altKey){
       //console.log('Key event is received!! '+event.shiftKey+" "+event.ctrlKey+" "+event.altKey+" "+event.key);
@@ -178,7 +205,7 @@ pmc.KeyEventListeners = class KeyEventListeners{
             if(velvet.tokenMap.has(typeLiteral)){
               velvet.tokens.tokens[velvet.tokenIndex].type = velvet.tokenMap[typeLiteral];
             }
-            tokenRange=velvet.tokens.tokens[velvet.tokenIndex].stop-velvet.tokens.tokens[velvet.tokenIndex].start+1;
+            tokenRange=velvet.tokens.tokens[velvet.tokenIndex].text.length;
             velvet.charOffset=tokenRange;
             console.log("enter ac "+tokenRange+" "+velvet.charOffset);
           }
@@ -200,31 +227,30 @@ pmc.KeyEventListeners = class KeyEventListeners{
             velvet.autocomplete.setCandidateValue("", event);
           break;
         case "Backspace":
-        case "Delete":
-          if(event.key==="Backspace"){
-            velvet.tokenIndex-=1;
-            tokenRange=velvet.tokens.tokens[velvet.tokenIndex].stop-velvet.tokens.tokens[velvet.tokenIndex].start+1;
-            velvet.charOffset=0;
-          }
-          else {
-            tokenRange=velvet.tokens.tokens[velvet.tokenIndex].stop-velvet.tokens.tokens[velvet.tokenIndex].start+1;
-            velvet.charOffset=tokenRange;
-          }
-          if(velvet.keyEventListeners.isCRLF(velvet.tokens.tokens[velvet.tokenIndex])){
-            velvet.removeCurrentToken();
+          if(velvet.charOffset===0){
+            velvet.tokenIndex--;
+            tokenRange=velvet.tokens.tokens[velvet.tokenIndex].text.length;
+            velvet.charOffset=tokenRange-1;
           }
           else{
-            if(velvet.tokens.tokens[velvet.tokenIndex].text.length>1){
-              velvet.tokens.tokens[velvet.tokenIndex].text=velvet.tokens.tokens[velvet.tokenIndex].text.substring(0, velvet.tokens.tokens[velvet.tokenIndex].text.length-1);
-              velvet.tokens.tokens[velvet.tokenIndex].stop++;
-              velvet.charOffset++;
-              velvet.autocomplete.setCandidateValue(velvet.tokens.tokens[velvet.tokenIndex].text, event);
-            }
-            else{
-              velvet.removeCurrentToken();
-            }
-              //velvet.layoutText();
+            velvet.charOffset--;
           }
+          var wascrlf=velvet.keyEventListeners.removeCurrentCharacter(event);
+          if(wascrlf)velvet.tokenIndex--;
+          tokenRange=velvet.tokens.tokens[velvet.tokenIndex].text.length;
+          currentLine=velvet.tokens.tokens[velvet.tokenIndex].line;
+          if(wascrlf)velvet.charOffset=tokenRange-1;
+         velvet.layoutText();
+          break;
+        case "Delete":
+          if(velvet.tokens.tokens[velvet.tokenIndex].text.length<=velvet.charOffset){
+            velvet.tokenIndex++;
+            velvet.charOffset==0;
+          }
+          var wascrlf=velvet.keyEventListeners.removeCurrentCharacter(event);
+          tokenRange=velvet.tokens.tokens[velvet.tokenIndex].text.length;
+          currentLine=velvet.tokens.tokens[velvet.tokenIndex].line;
+          if(wascrlf)velvet.charOffset=0;
           velvet.layoutText();
           break;
           case "Alt":

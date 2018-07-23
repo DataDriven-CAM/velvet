@@ -16,9 +16,18 @@ pmc.Velvet = class Velvet{
         this.tokenIndex=0;
         this.charOffset=0;
         this.autoList=[];
+        this.tokenMap = new Map();
+        this.tokenParserMap = new Map();
+        var _this = this;
         for(var entry in this.lexer.literalNames){
           if(this.lexer.literalNames[entry]!=null){
             this.autoList.push(this.lexer.literalNames[entry].substr(1, this.lexer.literalNames[entry].length-2));
+            _this.tokenMap.set(this.lexer.literalNames[entry].substr(1, this.lexer.literalNames[entry].length-2), entry);
+          }
+        }
+        for(var entry in this.parser.literalNames){
+          if(this.parser.literalNames[entry]!=null){
+            _this.tokenParserMap.set(this.parser.literalNames[entry].substr(1, this.parser.literalNames[entry].length-2), entry);
           }
         }
         this.layoutText();
@@ -123,15 +132,26 @@ pmc.Velvet = class Velvet{
     return this.tokens.getText();
   }
   
-   removeCurrentToken(){
+   removeCurrentCharacter(event){
+     
+    if(velvet.tokens.tokens[velvet.tokenIndex].text.length>1 && velvet.tokens.tokens[velvet.tokenIndex].text.length-1>velvet.charOffset){
+          var str=velvet.tokens.tokens[velvet.tokenIndex].text;
+          velvet.tokens.tokens[velvet.tokenIndex].text=str.slice(0, velvet.charOffset)+str.slice(velvet.charOffset+1);
+          velvet.tokens.tokens[velvet.tokenIndex].stop--;
+          velvet.autocomplete.setCandidateValue(velvet.tokens.tokens[velvet.tokenIndex].text, event);
+    }
+    else{
+      var wascrlf=velvet.keyEventListeners.isCRLF(velvet.tokens.tokens[velvet.tokenIndex]);
      var tokenRange=velvet.tokens.tokens[velvet.tokenIndex].stop-velvet.tokens.tokens[velvet.tokenIndex].start+1;
     this.tokens.tokens.splice(this.tokenIndex, 1);
-    console.log("deletng a crlf");
     this.tokens.tokens[this.tokenIndex].column=this.tokens.tokens[this.tokenIndex-1].column+1;
+    if(wascrlf){
     for(var i= this.tokenIndex, l = this.tokens.tokens.length; i< l; i++){
       this.tokens.tokens[i].stop-=tokenRange;
       this.tokens.tokens[i].start-=tokenRange;
       this.tokens.tokens[i].line--;
+    }
+    }
     }
     
   }
