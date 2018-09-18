@@ -31,14 +31,14 @@ pmc.Cursor = class Cursor{
         velvet.tokenIndex=lineStartIndex;
         velvet.cursor.currentLine=velvet.tokens.tokens[velvet.tokenIndex].line;
         var line=velvet.tokens.getText({start: velvet.tokens.tokens[lineStartIndex], stop: velvet.tokens.tokens[velvet.tokenIndex]});
-        var tokenRange=velvet.tokens.tokens[velvet.tokenIndex].stop-velvet.tokens.tokens[velvet.tokenIndex].start+1;
+        var  tokenRange=velvet.tokens.tokens[velvet.tokenIndex].text.length;
         velvet.charOffset=0;
         while(velvet.tokenIndex<velvet.tokens.tokens.length-1 && velvet.tokens.tokens[velvet.tokenIndex+1].line===velvet.cursor.currentLine && (10+ctx.measureText(line.substring(0, line.length-tokenRange+velvet.charOffset)).width)<=x){
           if(velvet.charOffset<tokenRange)velvet.charOffset++;
           else {
             velvet.tokenIndex++;
             line=velvet.tokens.getText({start: velvet.tokens.tokens[lineStartIndex], stop: velvet.tokens.tokens[velvet.tokenIndex]});
-            tokenRange=velvet.tokens.tokens[velvet.tokenIndex].stop-velvet.tokens.tokens[velvet.tokenIndex].start+1;
+            tokenRange=velvet.tokens.tokens[velvet.tokenIndex].text.length;
             velvet.charOffset=0;
           }
         }

@@ -6,29 +6,36 @@ pmc.KeyEventListeners = class KeyEventListeners{
     
    removeCurrentCharacter(event){
      
-    var wascrlf=velvet.keyEventListeners.isCRLF(velvet.tokens.tokens[velvet.tokenIndex]);
-    if(!wascrlf && velvet.tokens.tokens[velvet.tokenIndex].text.length>1 && velvet.tokens.tokens[velvet.tokenIndex].text.length>velvet.charOffset){
-          var str=velvet.tokens.tokens[velvet.tokenIndex].text;
-          velvet.tokens.tokens[velvet.tokenIndex].text=str.slice(0, velvet.charOffset)+str.slice(velvet.charOffset+1);
-          velvet.tokens.tokens[velvet.tokenIndex].stop--;
-          velvet.autocomplete.setCandidateValue(velvet.tokens.tokens[velvet.tokenIndex].text, event);
+    if(velvet.keyEventListeners.isCRLF(velvet.tokens.tokens[velvet.tokenIndex])){
+      velvet.tokens.tokens.splice(velvet.tokenIndex, 1);
+      for(var i= velvet.tokenIndex, l = velvet.tokens.tokens.length; i< l; i++){
+        //velvet.tokens.tokens[i].stop-=tokenRange;
+        //velvet.tokens.tokens[i].start-=tokenRange;
+        velvet.tokens.tokens[i].line--;
+      }
+      var i= velvet.tokenIndex;
+      for(l = velvet.tokens.tokens.length; !velvet.keyEventListeners.isCRLF(velvet.tokens.tokens[i]) && i< l; i++){
+         velvet.tokens.tokens[i].column=velvet.tokens.tokens[i-1].column+1;
+      }
+      velvet.tokens.tokens[i].column=velvet.tokens.tokens[i-1].column+1;
+      return true;
+    }
+    else if(velvet.tokens.tokens[velvet.tokenIndex].text.length<=1){
+      velvet.tokens.tokens.splice(velvet.tokenIndex, 1);
+      var i= velvet.tokenIndex;
+      for(l = velvet.tokens.tokens.length; !velvet.keyEventListeners.isCRLF(velvet.tokens.tokens[i]) && i< l; i++){
+         velvet.tokens.tokens[i].column=velvet.tokens.tokens[i-1].column+1;
+      }
+      velvet.tokens.tokens[i].column=velvet.tokens.tokens[i-1].column+1;
+      return false;
     }
     else{
-      var tokenRange=velvet.tokens.tokens[velvet.tokenIndex].text.length;
-      velvet.tokens.tokens.splice(velvet.tokenIndex, 1);
-      console.log(wascrlf+" "+velvet.tokens.tokens[velvet.tokenIndex].text+" "+tokenRange);
-      velvet.tokens.tokens[velvet.tokenIndex].column=velvet.tokens.tokens[velvet.tokenIndex-1].column+1;
-      {
-        for(var i= velvet.tokenIndex, l = velvet.tokens.tokens.length; i< l; i++){
-          //velvet.tokens.tokens[i].stop-=tokenRange;
-          //velvet.tokens.tokens[i].start-=tokenRange;
-          if(wascrlf)velvet.tokens.tokens[i].line--;
-        }
-       velvet.tokens.tokens[velvet.tokenIndex+1].column=velvet.tokens.tokens[velvet.tokenIndex].column+1;
-       
-      }
+      var str=velvet.tokens.tokens[velvet.tokenIndex].text;
+      velvet.tokens.tokens[velvet.tokenIndex].text=str.slice(0, velvet.charOffset)+str.slice(velvet.charOffset+1);
+      //if(velvet.tokens.tokens[velvet.tokenIndex].stop>velvet.tokens.tokens[velvet.tokenIndex].start)velvet.tokens.tokens[velvet.tokenIndex].stop--;
+      //velvet.autocomplete.setCandidateValue(velvet.tokens.tokens[velvet.tokenIndex].text, event);
+      return false;
     }
-    return wascrlf;
   }
   
     press (event){
@@ -184,8 +191,8 @@ pmc.KeyEventListeners = class KeyEventListeners{
           velvet.autocomplete.incrementFocus();
         }
         else{
-        velvet.autocomplete.setCandidateValue("", event);
-        velvet.cursor.position(velvet.cursor.currentX+5, velvet.cursor.currentY + 36);
+          velvet.autocomplete.setCandidateValue("", event);
+          velvet.cursor.position(velvet.cursor.currentX+5, velvet.cursor.currentY + 36);
         return;
         }
         break;
@@ -199,7 +206,7 @@ pmc.KeyEventListeners = class KeyEventListeners{
           if( velvet.autocomplete.countListSize()>=1){
             //velvet.autocomplete.setCandidateValue(velvet.tokens.tokens[velvet.tokenIndex].text, event);
             velvet.tokens.tokens[velvet.tokenIndex].text=velvet.autocomplete.getCompletedValue();
-            velvet.tokens.tokens[velvet.tokenIndex].stop=velvet.tokens.tokens[velvet.tokenIndex].start+velvet.tokens.tokens[velvet.tokenIndex].text.length;
+            //velvet.tokens.tokens[velvet.tokenIndex].stop=velvet.tokens.tokens[velvet.tokenIndex].start+velvet.tokens.tokens[velvet.tokenIndex].text.length;
             velvet.tokens.tokens[velvet.tokenIndex].channel=velvet.tokens.tokens[velvet.tokenIndex].DEFAULT_CHANNEL;
             var typeLiteral="'"+velvet.tokens.tokens[velvet.tokenIndex].text+"'";
             if(velvet.tokenMap.has(typeLiteral)){
@@ -230,7 +237,7 @@ pmc.KeyEventListeners = class KeyEventListeners{
           if(velvet.charOffset===0){
             velvet.tokenIndex--;
             tokenRange=velvet.tokens.tokens[velvet.tokenIndex].text.length;
-            velvet.charOffset=tokenRange-1;
+            if(tokenRange>0)velvet.charOffset=tokenRange-1; else velvet.charOffset=0;
           }
           else{
             velvet.charOffset--;
@@ -239,13 +246,14 @@ pmc.KeyEventListeners = class KeyEventListeners{
           if(wascrlf)velvet.tokenIndex--;
           tokenRange=velvet.tokens.tokens[velvet.tokenIndex].text.length;
           currentLine=velvet.tokens.tokens[velvet.tokenIndex].line;
-          if(wascrlf)velvet.charOffset=tokenRange-1;
+          if(wascrlf && tokenRange>0)velvet.charOffset=tokenRange-1;
+          if(wascrlf && tokenRange===0)velvet.charOffset=0;
          velvet.layoutText();
           break;
         case "Delete":
           if(velvet.tokens.tokens[velvet.tokenIndex].text.length<=velvet.charOffset){
             velvet.tokenIndex++;
-            velvet.charOffset==0;
+            velvet.charOffset=0;
           }
           var wascrlf=velvet.keyEventListeners.removeCurrentCharacter(event);
           tokenRange=velvet.tokens.tokens[velvet.tokenIndex].text.length;

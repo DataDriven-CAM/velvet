@@ -58,12 +58,12 @@ pmc.Velvet = class Velvet{
         var previousLine=1;
         var rows=0;
         //console.log('first token = ' + this.tokens.tokens[0].type+" "+this.lexer.ruleNames[this.tokens.tokens[0].type-1]);
-        for (var i in this.tokens.tokens) {
+        //for (var i in this.tokens.tokens) {
           //console.log(i + ' = ' + this.lexer.ruleNames[this.tokens.tokens[i].type - 1]);
-        }
-        for (var i in this.tokens) {
+        //}
+        //for (var i in this.tokens) {
           //console.log(i + ' = ' + this.tokens[i]);
-        }
+        //}
         var _this=this;
         this.tokens.tokens.forEach(function(token){
     /*Object.getOwnPropertyNames(token).forEach(
@@ -130,30 +130,6 @@ pmc.Velvet = class Velvet{
   
   get text(){
     return this.tokens.getText();
-  }
-  
-   removeCurrentCharacter(event){
-     
-    if(velvet.tokens.tokens[velvet.tokenIndex].text.length>1 && velvet.tokens.tokens[velvet.tokenIndex].text.length-1>velvet.charOffset){
-          var str=velvet.tokens.tokens[velvet.tokenIndex].text;
-          velvet.tokens.tokens[velvet.tokenIndex].text=str.slice(0, velvet.charOffset)+str.slice(velvet.charOffset+1);
-          velvet.tokens.tokens[velvet.tokenIndex].stop--;
-          velvet.autocomplete.setCandidateValue(velvet.tokens.tokens[velvet.tokenIndex].text, event);
-    }
-    else{
-      var wascrlf=velvet.keyEventListeners.isCRLF(velvet.tokens.tokens[velvet.tokenIndex]);
-     var tokenRange=velvet.tokens.tokens[velvet.tokenIndex].stop-velvet.tokens.tokens[velvet.tokenIndex].start+1;
-    this.tokens.tokens.splice(this.tokenIndex, 1);
-    this.tokens.tokens[this.tokenIndex].column=this.tokens.tokens[this.tokenIndex-1].column+1;
-    if(wascrlf){
-    for(var i= this.tokenIndex, l = this.tokens.tokens.length; i< l; i++){
-      this.tokens.tokens[i].stop-=tokenRange;
-      this.tokens.tokens[i].start-=tokenRange;
-      this.tokens.tokens[i].line--;
-    }
-    }
-    }
-    
   }
   
   displayRule(tokenIndex){
