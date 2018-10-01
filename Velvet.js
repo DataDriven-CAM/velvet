@@ -98,7 +98,7 @@ pmc.Velvet = class Velvet{
           ctx.shadowOffsetY = 0;
           ctx.shadowBlur = 0;
           
-          lineOffset+=ctx.measureText(token.text).width;
+          lineOffset+=ctx.measureText(tokenStr).width;
           rows=token.line;
         });
         this.rows = rows;
@@ -128,9 +128,9 @@ pmc.Velvet = class Velvet{
     
   }
   
-  get text(){
-    return this.tokens.getText();
-  }
+//  get text(){
+//    return this.tokens.getText();
+//  }
   
   displayRule(tokenIndex){
     var hit=false;
