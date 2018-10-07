@@ -7,15 +7,22 @@ pmc.KeyEventListeners = class KeyEventListeners{
    removeCurrentCharacter(event){
      
     if(velvet.keyEventListeners.isCRLF(velvet.tokens.tokens[velvet.tokenIndex])){
+      console.log("remove crlf");
       var tokenRange=velvet.tokens.tokens[velvet.tokenIndex].text.length;
+      var position=velvet.tokens.tokens[velvet.tokenIndex].start;
+      var output=velvet.tokens.tokens[velvet.tokenIndex].source[1].strdata.slice(0, position)+velvet.tokens.tokens[velvet.tokenIndex].source[1].strdata.slice(position+tokenRange);
+      velvet.tokens.tokens[velvet.tokenIndex].source[1].strdata=output;
+      velvet.tokens.tokens[velvet.tokenIndex].source[1].data.splice(position, tokenRange);
       velvet.tokens.tokens.splice(velvet.tokenIndex, 1);
       for(var i= velvet.tokenIndex, l = velvet.tokens.tokens.length; i< l; i++){
         velvet.tokens.tokens[i].stop-=tokenRange;
         velvet.tokens.tokens[i].start-=tokenRange;
+        velvet.tokens.tokens[i].tokenIndex=i;
         velvet.tokens.tokens[i].line--;
       }
       var i= velvet.tokenIndex;
       for(l = velvet.tokens.tokens.length; !velvet.keyEventListeners.isCRLF(velvet.tokens.tokens[i]) && i< l; i++){
+        //console.log(i+" "+velvet.tokens.tokens[i].start+" "+velvet.tokens.tokens[i].stop+" "+JSON.stringify(velvet.tokens.tokens[i].source[1].strdata[position])+" "+velvet.tokens.tokens[i].source[1].data[position]+" removeCurrentCharacter "+velvet.tokens.tokens[i].text);
          velvet.tokens.tokens[i].column=velvet.tokens.tokens[i-1].column+1;
       }
       velvet.tokens.tokens[i].column=velvet.tokens.tokens[i-1].column+1;
@@ -23,12 +30,20 @@ pmc.KeyEventListeners = class KeyEventListeners{
     }
     else if(velvet.tokens.tokens[velvet.tokenIndex].text.length<=1){
       var tokenRange=velvet.tokens.tokens[velvet.tokenIndex].text.length;
+      console.log("remove <1 "+tokenRange);
+      var position=velvet.tokens.tokens[velvet.tokenIndex].start;
+      var output=velvet.tokens.tokens[velvet.tokenIndex].source[1].strdata.slice(0, position)+velvet.tokens.tokens[velvet.tokenIndex].source[1].strdata.slice(position+tokenRange);
+      velvet.tokens.tokens[velvet.tokenIndex].source[1].strdata=output;
+      velvet.tokens.tokens[velvet.tokenIndex].source[1].data.splice(position, tokenRange);
       velvet.tokens.tokens.splice(velvet.tokenIndex, 1);
+      for(var i= velvet.tokenIndex, l = velvet.tokens.tokens.length; i< l; i++){
+        velvet.tokens.tokens[i].stop-=tokenRange;
+        velvet.tokens.tokens[i].start-=tokenRange;
+        velvet.tokens.tokens[i].tokenIndex=i;
+      }
       var i= velvet.tokenIndex;
       for(l = velvet.tokens.tokens.length; !velvet.keyEventListeners.isCRLF(velvet.tokens.tokens[i]) && i< l; i++){
          velvet.tokens.tokens[i].column=velvet.tokens.tokens[i-1].column+1;
-        velvet.tokens.tokens[i].stop-=tokenRange;
-        velvet.tokens.tokens[i].start-=tokenRange;
       }
       velvet.tokens.tokens[i].column=velvet.tokens.tokens[i-1].column+1;
       return false;
@@ -36,9 +51,13 @@ pmc.KeyEventListeners = class KeyEventListeners{
     else{
       var str=velvet.tokens.tokens[velvet.tokenIndex].text;
       //velvet.tokens.tokens[velvet.tokenIndex].text=str.slice(0, velvet.charOffset)+str.slice(velvet.charOffset+1);
-        velvet.tokens.tokens[i].stop--;
-      var i= velvet.tokenIndex;
-      for(l = velvet.tokens.tokens.length; !velvet.keyEventListeners.isCRLF(velvet.tokens.tokens[i]) && i< l; i++){
+      var position=velvet.tokens.tokens[velvet.tokenIndex].start+velvet.charOffset;
+      console.log("removeCurrentCharacter "+position);
+      var output=velvet.tokens.tokens[velvet.tokenIndex].source[1].strdata.slice(0, position)+velvet.tokens.tokens[velvet.tokenIndex].source[1].strdata.slice(position+1);
+      velvet.tokens.tokens[velvet.tokenIndex].source[1].strdata=output;
+      velvet.tokens.tokens[velvet.tokenIndex].source[1].data.splice(position, 1);
+        velvet.tokens.tokens[velvet.tokenIndex].stop--;
+      for(var i= velvet.tokenIndex+1, l = velvet.tokens.tokens.length; i< l; i++){
         velvet.tokens.tokens[i].stop--;
         velvet.tokens.tokens[i].start--;
       }
@@ -213,6 +232,7 @@ pmc.KeyEventListeners = class KeyEventListeners{
             console.log("ent:"+velvet.tokenMap.get(key));
             }
           }*/
+          console.log("countListSize "+velvet.autocomplete.countListSize());
           if( velvet.autocomplete.countListSize()>=1){
             //velvet.autocomplete.setCandidateValue(velvet.tokens.tokens[velvet.tokenIndex].text, event);
             velvet.tokens.tokens[velvet.tokenIndex].text=velvet.autocomplete.getCompletedValue();
@@ -230,33 +250,36 @@ pmc.KeyEventListeners = class KeyEventListeners{
             var column = (velvet.keyEventListeners.isCRLF(velvet.tokens.tokens[velvet.tokenIndex])) ? 0 : 1;
             if(!velvet.keyEventListeners.isCRLF(velvet.tokens.tokens[velvet.tokenIndex]))velvet.tokenIndex++;
             var position=velvet.tokens.tokens[velvet.tokenIndex].start;
+          //console.log(velvet.tokens.tokens[velvet.tokenIndex].type+" isCRLF "+column+" "+JSON.stringify(velvet.tokens.tokens[velvet.tokenIndex].text)+" "+velvet.tokens.tokens[velvet.tokenIndex].source[1].data[position]);
             var insertable="\n";
             var output=velvet.tokens.tokens[velvet.tokenIndex].source[1].strdata.slice(0, position)+insertable+velvet.tokens.tokens[velvet.tokenIndex].source[1].strdata.slice(position);
             velvet.tokens.tokens[velvet.tokenIndex].source[1].strdata=output;
             velvet.tokens.tokens[velvet.tokenIndex].source[1].data.splice(position, 0, insertable.charCodeAt(0));
             //console.log(velvet.tokens.tokens[velvet.tokenIndex].source);
-            velvet.tokens.tokens.splice(velvet.tokenIndex, 0, tokenFactory.create(velvet.tokens.tokens[velvet.tokenIndex].source, 58, null, velvet.tokens.tokens[velvet.tokenIndex].HIDDEN_CHANNEL, velvet.tokens.tokens[velvet.tokenIndex].start, velvet.tokens.tokens[velvet.tokenIndex].start+1, velvet.tokens.tokens[velvet.tokenIndex].line, column));
+            velvet.tokens.tokens.splice(velvet.tokenIndex, 0, tokenFactory.create(velvet.tokens.tokens[velvet.tokenIndex].source, 58, null, velvet.tokens.tokens[velvet.tokenIndex].HIDDEN_CHANNEL, velvet.tokens.tokens[velvet.tokenIndex].start, velvet.tokens.tokens[velvet.tokenIndex].start, velvet.tokens.tokens[velvet.tokenIndex].line, column));
             velvet.tokens.tokens[velvet.tokenIndex].tokenIndex=velvet.tokenIndex;
-            //console.log(velvet.tokens.tokens[velvet.tokenIndex-1].line+" "+ velvet.tokens.tokens[velvet.tokenIndex-1].column+" "+JSON.stringify(velvet.tokens.tokens[velvet.tokenIndex-1].text)+" crlf "+JSON.stringify(velvet.tokens.tokens[velvet.tokenIndex].text)+" "+ velvet.tokens.tokens[velvet.tokenIndex].line+" "+ velvet.tokens.tokens[velvet.tokenIndex].column);
             //velvet.tokenIndex++;
             tokenRange=velvet.tokens.tokens[velvet.tokenIndex].text.length;
             velvet.charOffset=0;
             velvet.tokens.tokens[velvet.tokenIndex].column=0;
-            velvet.tokens.tokens[velvet.tokenIndex].line++;
+            //velvet.tokens.tokens[velvet.tokenIndex].line++;
             velvet.tokens.tokens[velvet.tokenIndex].tokenIndex=velvet.tokenIndex;
             for(var i= velvet.tokenIndex+1, l = velvet.tokens.tokens.length; i<l; i++){
               velvet.tokens.tokens[i].stop++;
               velvet.tokens.tokens[i].start++;
-              velvet.tokens.tokens[i].tokenIndex++;
+              velvet.tokens.tokens[i].tokenIndex=i;
               velvet.tokens.tokens[i].line++;
               //console.log(velvet.tokens.tokens[i].text);
             }
+            velvet.tokenIndex++;
+            //console.log(velvet.tokenIndex+" "+tokenRange+" "+velvet.tokens.tokens[velvet.tokenIndex-1].line+" "+ velvet.tokens.tokens[velvet.tokenIndex-1].column+" "+JSON.stringify(velvet.tokens.tokens[velvet.tokenIndex-1].text)+" crlf "+JSON.stringify(velvet.tokens.tokens[velvet.tokenIndex].text)+" "+ velvet.tokens.tokens[velvet.tokenIndex].line+" "+ velvet.tokens.tokens[velvet.tokenIndex].column+" "+position+" "+ velvet.tokens.tokens[velvet.tokenIndex].stop+" cc "+insertable.charCodeAt(0)+" "+velvet.tokens.tokens[velvet.tokenIndex].source[1].data[position]+" "+velvet.tokens.tokens[velvet.tokenIndex+1].source[1].data[position]);
           }
           currentLine++;
           velvet.layoutText();
             velvet.autocomplete.setCandidateValue("", event);
           break;
         case "Backspace":
+          console.log("Backspace "+tokenRange+" ");
           if(velvet.charOffset===0){
             velvet.tokenIndex--;
             tokenRange=velvet.tokens.tokens[velvet.tokenIndex].text.length;
@@ -265,6 +288,7 @@ pmc.KeyEventListeners = class KeyEventListeners{
           else{
             velvet.charOffset--;
           }
+          console.log("Backspace 2 "+tokenRange+" ");
           var wascrlf=velvet.keyEventListeners.removeCurrentCharacter(event);
           if(wascrlf)velvet.tokenIndex--;
           tokenRange=velvet.tokens.tokens[velvet.tokenIndex].text.length;
@@ -289,15 +313,16 @@ pmc.KeyEventListeners = class KeyEventListeners{
           case "Shift":
             break;
         default:
-          if(event.key>=' ' && event.key<='z'){
+          if(event.key>=' ' && event.key<='}'){
             //console.log("type="+velvet.tokens.tokens[velvet.tokenIndex].type);
             var stay = (velvet.autocomplete.countListSize()>=1 && velvet.tokens.tokens[velvet.tokenIndex].text===velvet.autocomplete.getCompletedValue());
             if(velvet.tokens.tokens[velvet.tokenIndex].type!=37 || stay){
               var tokenFactory=velvet.parser.getTokenFactory();
               var column = (stay) ? 1 : 0;
+              column = (velvet.tokens.tokens[velvet.tokenIndex].type===58) ? velvet.tokens.tokens[velvet.tokenIndex-1].column+1: column;
               console.log(column+" adding token "+velvet.tokens.tokens.length+" "+JSON.stringify(velvet.tokens.tokens[velvet.tokenIndex].text));
               //velvet.tokenIndex++;
-              var position=velvet.tokens.tokens[velvet.tokenIndex].start;
+              var position=velvet.tokens.tokens[velvet.tokenIndex].start+velvet.charOffset;
               var output=velvet.tokens.tokens[velvet.tokenIndex].source[1].strdata.slice(0, position)+event.key+velvet.tokens.tokens[velvet.tokenIndex].source[1].strdata.slice(position);
               velvet.tokens.tokens[velvet.tokenIndex].source[1].strdata=output;
               velvet.tokens.tokens[velvet.tokenIndex].source[1].data.splice(position, 0, event.key.charCodeAt(0));
@@ -309,7 +334,7 @@ pmc.KeyEventListeners = class KeyEventListeners{
               for(var i= velvet.tokenIndex+1, l = velvet.tokens.tokens.length; i< l; i++){
                 velvet.tokens.tokens[i].stop++;
                 velvet.tokens.tokens[i].start++;
-                velvet.tokens.tokens[i].tokenIndex++;
+                velvet.tokens.tokens[i].tokenIndex=i;
               }
             }
             else {
@@ -323,7 +348,7 @@ pmc.KeyEventListeners = class KeyEventListeners{
               for(var i= velvet.tokenIndex+1, l = velvet.tokens.tokens.length; i< l; i++){
                 velvet.tokens.tokens[i].start++;
                 velvet.tokens.tokens[i].stop++;
-                velvet.tokens.tokens[i].tokenIndex++;
+                velvet.tokens.tokens[i].tokenIndex=i;
               }
             }
               velvet.layoutText();
