@@ -1,6 +1,6 @@
-#canvasEditor{z-index:1}
 #canvasEditor,#cursor{position:relative}
-#cursor{background-color:#000;margin-top:-130px;z-index:2;animation:blinker 1s linear infinite}
+#canvasEditor{z-index:6}
+#cursor{background-color:#000;margin-top:-130px;z-index:7;animation:blinker 1s linear infinite}
 
 #files{
     position: relative;

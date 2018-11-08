@@ -5,9 +5,9 @@ pmc.MouseEventListeners = class MouseEventListeners{
     }
 
     click (event){
-        var ctx = velvet.canvas.getContext('2d');
-        var x = event.clientX - ctx.canvas.offsetLeft + window.pageXOffset;
-        var y = event.clientY - ctx.canvas.offsetTop + window.pageYOffset;
+        var rect = velvet.canvas.getBoundingClientRect();
+        var x = event.clientX - rect.left;
+        var y = event.clientY - rect.top+20;
         velvet.cursor.position(x, y);
         //velvet.displayRule(velvet.tokenIndex);
       event.preventDefault();
@@ -29,9 +29,9 @@ pmc.MouseEventListeners = class MouseEventListeners{
     }
     
     doubleclick (event){
-        var ctx = velvet.canvas.getContext('2d');
-        var x = event.clientX - ctx.canvas.offsetLeft + window.pageXOffset;
-        var y = event.clientY - ctx.canvas.offsetTop + window.pageYOffset;
+        var rect = velvet.canvas.getBoundingClientRect();
+        var x = event.clientX - rect.left;
+        var y = event.clientY - rect.top+20;
         velvet.cursor.position(x, y);
         velvet.cursor.startTokenIndex=velvet.tokenIndex;
         velvet.cursor.stopTokenIndex=velvet.tokenIndex;
@@ -55,9 +55,9 @@ pmc.MouseEventListeners = class MouseEventListeners{
     }
     
     down (event){
-        var ctx = velvet.canvas.getContext('2d');
-        var x = event.clientX - ctx.canvas.offsetLeft + window.pageXOffset;
-        var y = event.clientY - ctx.canvas.offsetTop + window.pageYOffset;
+        var rect = velvet.canvas.getBoundingClientRect();
+        var x = event.clientX - rect.left;
+        var y = event.clientY - rect.top+20;
         velvet.cursor.position(x, y);
         velvet.cursor.startTokenIndex=velvet.tokenIndex;
         velvet.mouseEventListeners.dragging = true;
@@ -65,17 +65,17 @@ pmc.MouseEventListeners = class MouseEventListeners{
     
     move (event){
       if(velvet.mouseEventListeners.dragging){
-        var ctx = velvet.canvas.getContext('2d');
-        var x = event.clientX - ctx.canvas.offsetLeft + window.pageXOffset;
-        var y = event.clientY - ctx.canvas.offsetTop + window.pageYOffset;
+        var rect = velvet.canvas.getBoundingClientRect();
+        var x = event.clientX - rect.left;
+        var y = event.clientY - rect.top+20;
         velvet.cursor.position(x, y);
       }
     }
     
     up (event){
-        var ctx = velvet.canvas.getContext('2d');
-        var x = event.clientX - ctx.canvas.offsetLeft + window.pageXOffset;
-        var y = event.clientY - ctx.canvas.offsetTop + window.pageYOffset;
+        var rect = velvet.canvas.getBoundingClientRect();
+        var x = event.clientX - rect.left;
+        var y = event.clientY - rect.top+20;
         velvet.cursor.position(x, y);
         if(velvet.cursor.startTokenIndex<=velvet.tokenIndex){
           velvet.cursor.stopTokenIndex=velvet.tokenIndex;

@@ -1,8 +1,9 @@
 /*global pmc*/
 var pmc = pmc || {};
 pmc.Velvet = class Velvet{
-    constructor(canvas, tokens, lexer, parser, tree){
+    constructor(canvas, font, tokens, lexer, parser, tree){
         this.canvas = canvas;
+        this.font = font;
         this.tokens = tokens;
         this.lexer = lexer;
         this.parser = parser;
@@ -53,7 +54,7 @@ pmc.Velvet = class Velvet{
     layoutText(){
         var ctx = this.canvas.getContext('2d');
         ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        ctx.font = '14px serif';
+        ctx.font = this.font.getFont();
         var lineOffset=0;
         var previousLine=1;
         var rows=0;
@@ -92,7 +93,7 @@ pmc.Velvet = class Velvet{
             ctx.shadowBlur = 10; // integer
             }
           }
-          ctx.fillText(tokenStr, 10+lineOffset, 20+token.line*18);
+          ctx.fillText(tokenStr, 10+lineOffset, 8+token.line*_this.font.getFontSize());
           ctx.shadowColor = ctx.shadowColor;
           ctx.shadowOffsetX = 0;
           ctx.shadowOffsetY = 0;

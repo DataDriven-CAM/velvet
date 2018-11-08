@@ -135,7 +135,7 @@ pmc.KeyEventListeners = class KeyEventListeners{
     }
           var line=velvet.tokens.getText({start: velvet.tokens.tokens[lineStartIndex], stop: velvet.tokens.tokens[velvet.tokenIndex]});
         var ctx = velvet.canvas.getContext('2d');
-             velvet.cursor.position(ctx.measureText(line.substring(0, line.length-tokenRange+velvet.charOffset)).width, currentLine*18);
+             velvet.cursor.position(ctx.measureText(line.substring(0, line.length-tokenRange+velvet.charOffset)).width, currentLine*velvet.font.getFontSize());
             velvet.layoutText();
           }
           break;
@@ -367,7 +367,7 @@ pmc.KeyEventListeners = class KeyEventListeners{
     //console.log('place '+velvet.charOffset+" "+tokenRange+" start "+lineStartIndex+" "+velvet.tokenIndex+" "+currentLine+" "+velvet.tokens.tokens[velvet.tokenIndex].text+" "+velvet.tokens.tokens[velvet.tokenIndex].column+" "+velvet.tokens.tokens[velvet.tokenIndex].type);
         var line=velvet.tokens.getText({start: velvet.tokens.tokens[lineStartIndex], stop: velvet.tokens.tokens[velvet.tokenIndex]});
         console.log("line "+JSON.stringify(line));
-        velvet.cursor.overlay(ctx.measureText(line.substring(0, line.length-tokenRange+velvet.charOffset)).width, currentLine*18);
+        velvet.cursor.overlay(ctx.measureText(line.substring(0, line.length-tokenRange+velvet.charOffset)).width, currentLine*velvet.font.getFontSize());
         event.preventDefault();
     }
     

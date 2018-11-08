@@ -12,7 +12,7 @@ pmc.Autocomplete = class Autocomplete{
       this.autocomplete.position = 'relative';
       this.autocomplete.style.left = '10px';
       this.autocomplete.style.top = '8px';
-      this.autocomplete.style.marginTop = '130px';//(-(10+velvet.rows*18))+'px';
+      this.autocomplete.style.marginTop = '130px';//(-(10+velvet.rows**velvet.font.getFontSize()))+'px';
       document.getElementById('cursor').parentNode.appendChild(this.autocomplete);
     }
     
