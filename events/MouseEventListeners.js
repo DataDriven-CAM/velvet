@@ -87,8 +87,10 @@ pmc.MouseEventListeners = class MouseEventListeners{
         }
         for(var guessIndex=0;guessIndex<upTo.length;guessIndex++){
           console.log(upTo[guessIndex]+" map? "+treeTypes[guessIndex]+" "+treeRuleTypes[guessIndex]);
-        }        
-      if(velvet.atnListener!=undefined)velvet.atnListener(99);
+        }
+        ruleIndex = treeRuleTypes[upTo.length-1];
+        console.log(ruleIndex);
+      if(velvet.atnListener!=undefined)velvet.atnListener(ruleIndex);
     }
     
     down (event){
