@@ -50,7 +50,44 @@ pmc.MouseEventListeners = class MouseEventListeners{
           }
         }
 
+      console.log("velvet.parser._interp");
       console.log(velvet.parser._interp);
+      console.log("velvet.tree");
+      console.log(velvet.tree);
+      var upTo =[];
+        for(var guessIndex=0;guessIndex<velvet.tokenIndex;guessIndex++){
+//          console.log(velvet.tokens.tokens[guessIndex]);
+          if(velvet.tokens.tokens[guessIndex].channel===0){
+            upTo.push(velvet.tokens.tokens[guessIndex].type);
+          }
+        }
+        var treeTypes = [];
+        var treeRuleTypes = [];
+          var ruleIndex = -1;
+        for(var guessIndex=0;guessIndex<velvet.tree.children.length;guessIndex++){
+          if(velvet.tree.children[guessIndex].children != undefined){
+            for(var childIndex=0;childIndex<velvet.tree.children[guessIndex].children.length;childIndex++){
+              if(velvet.tree.children[guessIndex].children[childIndex].symbol != undefined){
+                treeTypes.push(velvet.tree.children[guessIndex].children[childIndex].symbol.type);
+              }
+              else if(typeof velvet.tree.children[guessIndex].children[childIndex].start==='object'){
+                treeTypes.push(velvet.tree.children[guessIndex].children[childIndex].start.type);
+              }
+              else{
+                treeTypes.push(velvet.tree.children[guessIndex].children[childIndex].symbol.type);
+              }
+              ruleIndex = velvet.tree.children[guessIndex].ruleIndex;
+              treeRuleTypes.push(ruleIndex);
+            }
+          }
+          else{
+              treeTypes.push(velvet.tree.children[guessIndex].symbol.type);
+              treeRuleTypes.push(ruleIndex);
+          }
+        }
+        for(var guessIndex=0;guessIndex<upTo.length;guessIndex++){
+          console.log(upTo[guessIndex]+" map? "+treeTypes[guessIndex]+" "+treeRuleTypes[guessIndex]);
+        }        
       if(velvet.atnListener!=undefined)velvet.atnListener(99);
     }
     
