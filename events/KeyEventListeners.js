@@ -133,7 +133,7 @@ pmc.KeyEventListeners = class KeyEventListeners{
     while(lineStartIndex>0 && velvet.tokens.tokens[lineStartIndex].line===currentLine){
       lineStartIndex--;
     }
-          var line=velvet.tokens.getText({start: velvet.tokens.tokens[lineStartIndex], stop: velvet.tokens.tokens[velvet.tokenIndex]});
+          var line=velvet.tokens.getText({start: velvet.tokens.tokens[lineStartIndex].tokenIndex, stop: velvet.tokens.tokens[velvet.tokenIndex].tokenIndex});
         var ctx = velvet.canvas.getContext('2d');
              velvet.cursor.position(ctx.measureText(line.substring(0, line.length-tokenRange+velvet.charOffset)).width, currentLine*velvet.font.getFontSize());
             velvet.layoutText();
@@ -365,8 +365,7 @@ pmc.KeyEventListeners = class KeyEventListeners{
       lineStartIndex--;
     }
     //console.log('place '+velvet.charOffset+" "+tokenRange+" start "+lineStartIndex+" "+velvet.tokenIndex+" "+currentLine+" "+velvet.tokens.tokens[velvet.tokenIndex].text+" "+velvet.tokens.tokens[velvet.tokenIndex].column+" "+velvet.tokens.tokens[velvet.tokenIndex].type);
-        var line=velvet.tokens.getText({start: velvet.tokens.tokens[lineStartIndex], stop: velvet.tokens.tokens[velvet.tokenIndex]});
-        console.log("line "+JSON.stringify(line));
+        var line=velvet.tokens.getText({start: velvet.tokens.tokens[lineStartIndex].tokenIndex, stop: velvet.tokens.tokens[velvet.tokenIndex].tokenIndex});
         velvet.cursor.overlay(ctx.measureText(line.substring(0, line.length-tokenRange+velvet.charOffset)).width, currentLine*velvet.font.getFontSize());
         event.preventDefault();
     }

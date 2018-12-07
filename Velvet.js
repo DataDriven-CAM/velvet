@@ -161,5 +161,12 @@ pmc.Velvet = class Velvet{
     this.atnListener = atnListener;
   }
   
+  getTree(){
+    return this.tree;
+  }
+  
+  getTokens(){
+    return this.tokens;
+  }
 }
 
